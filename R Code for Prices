@@ -1,0 +1,45 @@
+historical_prices<-
+  data.frame(
+    SYMBOL = character()
+    ,SERIES = character()
+    ,OPEN = double()
+    ,HIGH = double()
+    ,LOW = double()
+    ,CLOSE = double()
+    ,LAST = double()
+    ,PREVCLOSE = double()
+    ,TOTTRDQTY = double()
+    ,TOTTRDVAL = double()
+    ,TIMESTAMP = double()
+    ,TOTALTRADES = double()
+    ,ISIN = character()
+    ,X = character()
+  )
+cnames<-colnames(latest_prices)
+write.csv(cnames, 'cnames.csv')
+d = c(1:8)
+y = c(2019)
+m = c('JAN','FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC')
+m = c('JAN')
+l = "https://www.nseindia.com/content/historical/EQUITIES/"
+  for (yy in y){
+  #  print(yy)
+      for (mm in m){
+  #      print(paste(yy,mm))
+        for(dd in d){
+          print(dd)
+          if (dd<10) {dd=paste("0",dd, sep = "")}
+          print(paste("cm", dd, mm, yy, "bhav.csv.zip", sep = ""))
+          f=paste("cm", dd, mm, yy, "bhav.csv.zip", sep = "")
+          f1=paste("cm", dd, mm, yy, "bhav.csv", sep = "")
+          ll = paste(l, yy, "/", mm, "/", f, sep = "")
+          print(ll)
+          bhav = try(download.file(ll,'cmp', mode="wb"), silent = TRUE)
+          if(class(bhav)=="try-error"){print("Err..")}
+          else{
+          unzip('cmp', f1)
+          latest_prices <- read.table(f1,sep=",",header=T)
+          historical_prices<- rbind(historical_prices,latest_prices)}
+        }
+      }
+    }
